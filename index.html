@@ -175,6 +175,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 4em;
+      color: rgba(255, 255, 255, 0.1);
     }
     
     .character-visual img, .enemy-visual img {
@@ -641,7 +643,7 @@
       <!-- Character Panel -->
       <div class="panel">
         <h3>👤 CHARACTER</h3>
-        <div class="character-visual" id="charVisual"></div>
+        <div class="character-visual" id="charVisual">🧙</div>
         <div class="stats-grid">
           <div class="stat-box"><strong>CLASS</strong><span id="charClass">-</span></div>
           <div class="stat-box"><strong>LEVEL</strong><span id="charLevel">1</span></div>
@@ -703,7 +705,7 @@
       <!-- Combat/Enemy Panel -->
       <div class="panel">
         <h3>⚔️ COMBAT ZONE</h3>
-        <div class="enemy-visual" id="enemyVisual"></div>
+        <div class="enemy-visual" id="enemyVisual">👹</div>
         
         <div class="stats-grid">
           <div class="stat-box"><strong>NAME</strong><span id="enemyName" style="font-size: 1em;">No Enemy</span></div>
@@ -1281,15 +1283,30 @@
       updateUI();
     }
 
-    function equipItem(item, index) {
-      if (item.heal || item.mana) return;
+    function handleItemClick(index) {
+      const item = gameState.inventory.items[index];
+      if (!item) return;
       
-      const slot = item.str ? 'weapon' : 'armor';
-      if (gameState.inventory[slot]) gameState.inventory.items.push(gameState.inventory[slot]);
+      if (item.heal || item.mana) {
+        // Use potion
+        if (item.heal) {
+          gameState.player.hp = Math.min(gameState.player.maxHP, gameState.player.hp + item.heal);
+          log(`🧪 Used ${item.name}! +${item.heal} HP`, 'success');
+        } else if (item.mana) {
+          gameState.player.mana = Math.min(gameState.player.maxMana, gameState.player.mana + item.mana);
+          log(`✨ Used ${item.name}! +${item.mana} Mana`, 'success');
+        }
+        gameState.inventory.items.splice(index, 1);
+      } else {
+        // Equip weapon/armor
+        const slot = item.str ? 'weapon' : 'armor';
+        if (gameState.inventory[slot]) gameState.inventory.items.push(gameState.inventory[slot]);
+        
+        gameState.inventory[slot] = item;
+        gameState.inventory.items.splice(index, 1);
+        log(`⚙️ Equipped <strong>${item.name}</strong>!`, 'success');
+      }
       
-      gameState.inventory[slot] = item;
-      gameState.inventory.items.splice(index, 1);
-      log(`⚙️ Equipped <strong>${item.name}</strong>!`, 'success');
       updateUI();
     }
 
@@ -1298,7 +1315,7 @@
       gameState.inCombat = false;
       document.getElementById('mainButtons').style.display = 'flex';
       document.getElementById('combatButtons').style.display = 'none';
-      document.getElementById('enemyVisual').innerHTML = '';
+      document.getElementById('enemyVisual').innerHTML = '👹';
       updateUI();
     }
 
@@ -1536,7 +1553,7 @@
         invGrid.innerHTML = gameState.inventory.items.map((item, i) => {
           const stat = item.str ? `+${item.str} STR` : item.def ? `+${item.def} DEF` : item.heal ? `+${item.heal} HP` : `+${item.mana} Mana`;
           const itemImg = getItemImage(item);
-          return `<div class="item-card rarity-${item.rarity.toLowerCase()}" onclick="equipItem(gameState.inventory.items[${i}], ${i})">
+          return `<div class="item-card rarity-${item.rarity.toLowerCase()}" onclick="handleItemClick(${i})">
             <div class="item-image"><img src="${itemImg}" alt="${item.name}"></div>
             <div class="item-name">${item.name}</div>
             <div class="item-stats">${stat}</div>
