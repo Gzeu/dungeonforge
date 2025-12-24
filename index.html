@@ -109,6 +109,7 @@
       cursor: pointer;
       margin-top: 10px;
       font-weight: bold;
+      transition: all 0.3s;
     }
     
     .generate-img-btn:hover {
@@ -119,6 +120,7 @@
     .generate-img-btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
+      transform: none;
     }
     
     .hp-bar {
@@ -284,13 +286,6 @@
       color: #ff4444;
       font-size: 3em;
       margin-bottom: 20px;
-    }
-    
-    .loading {
-      color: #00d4ff;
-      font-size: 0.85em;
-      text-align: center;
-      margin-top: 5px;
     }
     
     @media (max-width: 900px) {
@@ -492,14 +487,14 @@
       },
       rarities: ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'],
       monsters: [
-        { name: 'Goblin', hpMod: 0.8, atkMod: 0.8, defMod: 0.7, desc: 'small green creature with sharp teeth' },
-        { name: 'Orc', hpMod: 1.2, atkMod: 1.1, defMod: 1.0, desc: 'muscular green warrior with tusks' },
-        { name: 'Skeleton', hpMod: 0.9, atkMod: 0.9, defMod: 0.6, desc: 'undead bones wielding a rusty sword' },
-        { name: 'Dark Knight', hpMod: 1.5, atkMod: 1.3, defMod: 1.4, desc: 'armored warrior in black plate armor' },
-        { name: 'Demon', hpMod: 1.8, atkMod: 1.6, defMod: 1.2, desc: 'red-skinned demon with horns and wings' },
-        { name: 'Dragon', hpMod: 2.5, atkMod: 2.0, defMod: 1.8, desc: 'massive scaled dragon with glowing eyes' },
-        { name: 'Wraith', hpMod: 1.0, atkMod: 1.4, defMod: 0.8, desc: 'ghostly spirit with flowing dark robes' },
-        { name: 'Troll', hpMod: 2.0, atkMod: 1.2, defMod: 1.5, desc: 'large brutish troll with regenerating skin' }
+        { name: 'Goblin', hpMod: 0.8, atkMod: 0.8, defMod: 0.7, desc: 'small green goblin creature with sharp teeth and crude weapons' },
+        { name: 'Orc', hpMod: 1.2, atkMod: 1.1, defMod: 1.0, desc: 'muscular green orc warrior with tusks and battle axe' },
+        { name: 'Skeleton', hpMod: 0.9, atkMod: 0.9, defMod: 0.6, desc: 'undead skeleton warrior wielding rusty sword' },
+        { name: 'Dark Knight', hpMod: 1.5, atkMod: 1.3, defMod: 1.4, desc: 'evil knight in black plate armor with glowing red eyes' },
+        { name: 'Demon', hpMod: 1.8, atkMod: 1.6, defMod: 1.2, desc: 'red demon with horns wings and flaming sword' },
+        { name: 'Dragon', hpMod: 2.5, atkMod: 2.0, defMod: 1.8, desc: 'massive dragon with scales wings breathing fire' },
+        { name: 'Wraith', hpMod: 1.0, atkMod: 1.4, defMod: 0.8, desc: 'ghostly wraith spirit with flowing dark ethereal robes' },
+        { name: 'Troll', hpMod: 2.0, atkMod: 1.2, defMod: 1.5, desc: 'large brutish troll with green regenerating skin holding club' }
       ],
       weapons: [
         { name: 'Rusty Sword', str: 2, rarity: 'Common' },
@@ -543,34 +538,14 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    async function generatePerchanceImage(prompt) {
-      try {
-        const response = await fetch('https://image-generation.perchance.org/api/generate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: prompt,
-            negative_prompt: 'blurry, low quality, distorted, text, watermark',
-            width: 512,
-            height: 512,
-            guidance_scale: 7,
-            seed: Math.floor(Math.random() * 1000000)
-          })
-        });
-        
-        if (!response.ok) throw new Error('Image generation failed');
-        
-        const data = await response.json();
-        return data.image || null;
-      } catch (error) {
-        console.error('Perchance API error:', error);
-        return null;
-      }
+    function generateImageUrl(prompt) {
+      // Using Pollinations.ai free image API - no auth required
+      const encodedPrompt = encodeURIComponent(prompt);
+      const seed = Math.floor(Math.random() * 1000000);
+      return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&seed=${seed}&nologo=true`;
     }
 
-    async function generateCharacterImage() {
+    function generateCharacterImage() {
       if (gameState.generatingImage) return;
       
       gameState.generatingImage = true;
@@ -579,40 +554,50 @@
       btn.textContent = '⏳ Generating...';
       
       const classStyles = {
-        'Warrior': 'armored warrior with sword and shield',
-        'Mage': 'wizard with flowing robes holding a magical staff',
-        'Rogue': 'stealthy rogue in leather armor with daggers',
-        'Paladin': 'holy paladin in shining armor with divine aura'
+        'Warrior': 'armored warrior hero with sword and shield',
+        'Mage': 'powerful wizard with flowing robes holding magical staff',
+        'Rogue': 'stealthy rogue assassin in leather armor with daggers',
+        'Paladin': 'holy paladin knight in shining armor with divine light aura'
       };
       
       const rarityStyles = {
-        'Common': 'simple realistic style',
-        'Uncommon': 'detailed with green magical glow',
-        'Rare': 'highly detailed with blue magical aura',
-        'Epic': 'epic legendary style with purple energy',
-        'Legendary': 'mythical legendary hero with golden radiant light'
+        'Common': 'simple fantasy art',
+        'Uncommon': 'detailed fantasy art with green magical glow',
+        'Rare': 'epic fantasy art with blue magical aura',
+        'Epic': 'legendary fantasy art with purple divine energy',
+        'Legendary': 'mythical legendary hero with golden radiant divine light'
       };
       
-      const prompt = `Fantasy RPG character portrait, ${classStyles[gameState.player.class]}, ${rarityStyles[gameState.player.rarity]}, heroic pose, detailed face, dungeon background, fantasy art style, dramatic lighting`;
+      const prompt = `fantasy RPG character portrait ${classStyles[gameState.player.class]} ${rarityStyles[gameState.player.rarity]} heroic epic pose detailed face dark dungeon background dramatic lighting digital art masterpiece`;
       
-      const imageUrl = await generatePerchanceImage(prompt);
+      const imageUrl = generateImageUrl(prompt);
+      gameState.player.imageUrl = imageUrl;
       
-      if (imageUrl) {
-        gameState.player.imageUrl = imageUrl;
-        const portrait = document.getElementById('playerPortrait');
-        portrait.innerHTML = `<img src="${imageUrl}" alt="${gameState.player.class}">`;
+      const portrait = document.getElementById('playerPortrait');
+      const img = new Image();
+      
+      img.onload = function() {
+        portrait.innerHTML = '';
+        portrait.appendChild(img);
         portrait.classList.remove('empty');
         log('🎨 Character portrait generated!');
-      } else {
-        log('❌ Failed to generate image. Try again.');
-      }
+        gameState.generatingImage = false;
+        btn.disabled = false;
+        btn.textContent = '🎨 Generate Portrait';
+      };
       
-      gameState.generatingImage = false;
-      btn.disabled = false;
-      btn.textContent = '🎨 Generate Portrait';
+      img.onerror = function() {
+        log('❌ Failed to load image. Try again.');
+        gameState.generatingImage = false;
+        btn.disabled = false;
+        btn.textContent = '🎨 Generate Portrait';
+      };
+      
+      img.src = imageUrl;
+      img.alt = gameState.player.class;
     }
 
-    async function generateEnemyImage() {
+    function generateEnemyImage() {
       if (gameState.generatingImage || !gameState.enemy) return;
       
       gameState.generatingImage = true;
@@ -621,26 +606,36 @@
       btn.textContent = '⏳ Generating...';
       
       const monsterData = data.monsters.find(m => gameState.enemy.name.includes(m.name));
-      const monsterDesc = monsterData ? monsterData.desc : 'fantasy monster';
-      const elitePrefix = gameState.enemy.isElite ? 'elite powerful legendary' : '';
+      const monsterDesc = monsterData ? monsterData.desc : 'fantasy monster creature';
+      const elitePrefix = gameState.enemy.isElite ? 'elite powerful legendary boss' : '';
       
-      const prompt = `Fantasy RPG monster, ${elitePrefix} ${monsterDesc}, menacing pose, detailed creature design, dark dungeon environment, dramatic lighting, fantasy game art style, threatening atmosphere`;
+      const prompt = `fantasy RPG monster ${elitePrefix} ${monsterDesc} menacing threatening pose detailed creature design dark dungeon environment dramatic lighting game art digital painting masterpiece`;
       
-      const imageUrl = await generatePerchanceImage(prompt);
+      const imageUrl = generateImageUrl(prompt);
+      gameState.enemy.imageUrl = imageUrl;
       
-      if (imageUrl) {
-        gameState.enemy.imageUrl = imageUrl;
-        const portrait = document.getElementById('enemyPortrait');
-        portrait.innerHTML = `<img src="${imageUrl}" alt="${gameState.enemy.name}">`;
+      const portrait = document.getElementById('enemyPortrait');
+      const img = new Image();
+      
+      img.onload = function() {
+        portrait.innerHTML = '';
+        portrait.appendChild(img);
         portrait.classList.remove('empty');
         log('🎨 Enemy portrait generated!');
-      } else {
-        log('❌ Failed to generate enemy image.');
-      }
+        gameState.generatingImage = false;
+        btn.disabled = false;
+        btn.textContent = '🎨 Generate Enemy';
+      };
       
-      gameState.generatingImage = false;
-      btn.disabled = false;
-      btn.textContent = '🎨 Generate Enemy';
+      img.onerror = function() {
+        log('❌ Failed to load enemy image. Try again.');
+        gameState.generatingImage = false;
+        btn.disabled = false;
+        btn.textContent = '🎨 Generate Enemy';
+      };
+      
+      img.src = imageUrl;
+      img.alt = gameState.enemy.name;
     }
 
     function generateCharacter() {
@@ -668,7 +663,6 @@
       
       gameState.inventory = { weapon: null, armor: null, accessory: null, items: [] };
       
-      // Reset portrait
       const portrait = document.getElementById('playerPortrait');
       portrait.innerHTML = '';
       portrait.classList.add('empty');
@@ -757,7 +751,6 @@
         imageUrl: null
       };
       
-      // Reset enemy portrait
       const portrait = document.getElementById('enemyPortrait');
       portrait.innerHTML = '';
       portrait.classList.add('empty');
@@ -939,7 +932,6 @@
       document.getElementById('combatButtons').style.display = 'none';
       document.getElementById('genEnemyImg').disabled = true;
       
-      // Reset enemy portrait
       const portrait = document.getElementById('enemyPortrait');
       portrait.innerHTML = '';
       portrait.classList.add('empty');
