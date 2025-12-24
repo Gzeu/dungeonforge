@@ -2,7 +2,7 @@
 
 > A procedurally generated roguelike dungeon crawler built with **HTML5, CSS, and vanilla JavaScript**. Explore endless dungeons, encounter procedurally generated monsters, collect loot, and survive the depths!
 
-🎮 **[Play Now](https://gzeu.github.io/dungeonforge/)** | 📖 **[GitHub Repository](https://github.com/Gzeu/dungeonforge)** | 🔗 **[Perchance Generator](https://perchance.org/lbgw3gxd0m)**
+🎮 **[Play Now](https://gzeu.github.io/dungeonforge/)** | 📖 **[GitHub Repository](https://github.com/Gzeu/dungeonforge)** | 🔗 **[Pollinations.ai Generator](https://Pollinations.ai.org/lbgw3gxd0m)**
 
 ---
 
@@ -90,7 +90,7 @@ Iron Swords, Shields, Potions, Gold Coins, Enchanted Rings, and more!
 - **Architecture**: Single-page application (SPA)
 - **Storage**: LocalStorage for save data
 - **Hosting**: GitHub Pages
-- **Generator Integration**: Perchance procedural generation
+- **Generator Integration**: Pollinations.ai procedural generation
 
 ---
 
@@ -130,7 +130,7 @@ dungeonforge/
 - [ ] **Animations**: Combat and UI animations
 - [ ] **Leaderboard**: High score tracking
 - [ ] **Multiplayer**: Co-op or PvP modes
-- [ ] **Perchance Integration**: AI-generated descriptions
+- [ ] **Pollinations.ai Integration**: AI-generated descriptions
 
 ---
 
