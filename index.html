@@ -163,7 +163,7 @@
       gap: 10px;
     }
     
-    .character-visual {
+    .character-visual, .enemy-visual {
       width: 100%;
       height: 200px;
       background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 255, 0.1));
@@ -175,20 +175,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-size: cover;
-      background-position: center;
     }
     
-    .character-visual::before {
-      content: '🎭';
-      font-size: 5em;
-      opacity: 0.3;
-    }
-    
-    .character-visual img {
+    .character-visual img, .enemy-visual img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+    }
+    
+    .enemy-visual {
+      border-color: var(--danger);
+      background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(204, 68, 255, 0.1));
     }
     
     .stats-grid {
@@ -278,34 +276,6 @@
     .mana-fill { background: linear-gradient(90deg, #4488ff, #88aaff); }
     .xp-bar { border-color: var(--primary); }
     .xp-fill { background: linear-gradient(90deg, var(--primary), var(--accent)); }
-    
-    .enemy-visual {
-      width: 100%;
-      height: 180px;
-      background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(204, 68, 255, 0.1));
-      border: 2px solid var(--danger);
-      border-radius: 10px;
-      margin-bottom: 15px;
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-size: cover;
-      background-position: center;
-    }
-    
-    .enemy-visual::before {
-      content: '👹';
-      font-size: 4em;
-      opacity: 0.3;
-    }
-    
-    .enemy-visual img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
     
     .status-effects {
       display: flex;
@@ -404,6 +374,22 @@
     
     .item-card:hover::before {
       left: 100%;
+    }
+    
+    .item-image {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 8px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 255, 0.1));
+      overflow: hidden;
+      border: 1px solid var(--primary);
+    }
+    
+    .item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     
     .item-icon {
@@ -593,6 +579,33 @@
     .achievement-item:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+    }
+    
+    .achievement-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(255, 0, 255, 0.2));
+      border: 2px solid var(--primary);
+      overflow: hidden;
+    }
+    
+    .achievement-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .death-scene {
+      width: 100%;
+      height: 200px;
+      margin: 20px 0;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 3px solid var(--danger);
+      background-size: cover;
+      background-position: center;
     }
     
     @media (max-width: 1400px) {
@@ -802,6 +815,7 @@
   <div class="modal" id="gameOverModal">
     <div class="modal-content" style="border-color: var(--danger); text-align: center;">
       <div class="modal-header" style="color: var(--danger); font-size: 3em;">💀 YOU DIED 💀</div>
+      <div class="death-scene" id="deathScene"></div>
       <div style="font-size: 1.3em; margin: 30px 0; color: #aaa;">
         <p>Floor: <span id="finalFloor" style="color: var(--primary);">0</span></p>
         <p>Level: <span id="finalLevel" style="color: var(--primary);">0</span></p>
@@ -813,7 +827,7 @@
   </div>
 
   <script>
-    // Game State with all features
+    // Game State
     const gameState = {
       player: { class: null, rarity: 'Common', strength: 10, agility: 10, intelligence: 8, defense: 5,
         maxHP: 50, hp: 50, maxMana: 50, mana: 50, level: 1, exp: 0, expToLevel: 100, floor: 1, gold: 0,
@@ -863,18 +877,17 @@
         { name: 'Mana Potion', mana: 50, cost: 40, rarity: 'Common', icon: '✨' }
       ],
       achievements: [
-        { id: 'first_kill', name: 'First Blood', desc: 'Defeat your first enemy' },
-        { id: 'floor_5', name: 'Deep Dive', desc: 'Reach floor 5' },
-        { id: 'floor_10', name: 'Into the Abyss', desc: 'Reach floor 10' },
-        { id: 'level_10', name: 'Veteran', desc: 'Reach level 10' },
-        { id: 'kills_50', name: 'Monster Hunter', desc: 'Kill 50 enemies' },
-        { id: 'boss_kill', name: 'Boss Slayer', desc: 'Defeat a boss' },
-        { id: 'legendary', name: 'Legendary Hero', desc: 'Equip legendary item' },
-        { id: 'rich', name: 'Wealthy', desc: 'Accumulate 1000 gold' }
+        { id: 'first_kill', name: 'First Blood', desc: 'Defeat your first enemy', icon: '🩸' },
+        { id: 'floor_5', name: 'Deep Dive', desc: 'Reach floor 5', icon: '🌊' },
+        { id: 'floor_10', name: 'Into the Abyss', desc: 'Reach floor 10', icon: '🕳️' },
+        { id: 'level_10', name: 'Veteran', desc: 'Reach level 10', icon: '⚔️' },
+        { id: 'kills_50', name: 'Monster Hunter', desc: 'Kill 50 enemies', icon: '👹' },
+        { id: 'boss_kill', name: 'Boss Slayer', desc: 'Defeat a boss', icon: '👑' },
+        { id: 'legendary', name: 'Legendary Hero', desc: 'Equip legendary item', icon: '💎' },
+        { id: 'rich', name: 'Wealthy', desc: 'Accumulate 1000 gold', icon: '💰' }
       ]
     };
 
-    // Load saved data
     const saved = localStorage.getItem('dungeonforge_meta');
     if (saved) Object.assign(gameState.meta, JSON.parse(saved));
 
@@ -894,7 +907,12 @@
     function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
     function getPollinationImage(prompt, seed = Date.now()) {
-      return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=400&height=400&seed=${seed}&nologo=true`;
+      return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=512&height=512&seed=${seed}&nologo=true`;
+    }
+
+    function getItemImage(item) {
+      const type = item.str ? 'sword weapon' : item.def ? 'armor shield' : item.heal ? 'health potion' : 'mana potion';
+      return getPollinationImage(`fantasy ${type} ${item.rarity} quality rpg game icon`, item.name.length * 1000);
     }
 
     function generateCharacter() {
@@ -928,9 +946,9 @@
       gameState.roomsExplored = 0;
       gameState.monstersKilled = 0;
       
-      const charImg = getPollinationImage(`fantasy ${gameState.player.class} character, ${gameState.player.rarity} quality, rpg game art, detailed portrait`, rand(1, 999999));
-      document.getElementById('charVisual').style.backgroundImage = `url(${charImg})`;
-      document.getElementById('charVisual').innerHTML = '';
+      const charImg = getPollinationImage(`epic fantasy ${gameState.player.class} hero character portrait, ${gameState.player.rarity} rarity, detailed rpg game art, heroic pose`, rand(1, 999999));
+      const charDiv = document.getElementById('charVisual');
+      charDiv.innerHTML = `<img src="${charImg}" alt="${gameState.player.class}" />`;
       
       updateUI();
       log(`⭐ Created <strong class="rarity-${gameState.player.rarity.toLowerCase()}">${gameState.player.rarity} ${gameState.player.class}</strong>!`, 'success');
@@ -1020,9 +1038,9 @@
         isElite, isBoss: false, effects: []
       };
       
-      const enemyImg = getPollinationImage(`fantasy ${monster.name} monster, ${isElite ? 'elite' : 'common'} enemy, rpg game art`, rand(1, 999999));
-      document.getElementById('enemyVisual').style.backgroundImage = `url(${enemyImg})`;
-      document.getElementById('enemyVisual').innerHTML = '';
+      const enemyImg = getPollinationImage(`dark fantasy ${monster.name} monster enemy, ${isElite ? 'elite powerful' : 'common'} creature, menacing rpg game art, detailed`, rand(1, 999999));
+      const enemyDiv = document.getElementById('enemyVisual');
+      enemyDiv.innerHTML = `<img src="${enemyImg}" alt="${monster.name}" />`;
       
       startCombat();
       log(`⚔️ <strong>${gameState.enemy.name}</strong> (Lv.${level}) appears!`, 'combat');
@@ -1042,9 +1060,9 @@
         isElite: false, isBoss: true, effects: []
       };
       
-      const bossImg = getPollinationImage(`epic fantasy boss ${boss.name}, legendary enemy, detailed rpg art`, rand(1, 999999));
-      document.getElementById('enemyVisual').style.backgroundImage = `url(${bossImg})`;
-      document.getElementById('enemyVisual').innerHTML = '';
+      const bossImg = getPollinationImage(`epic fantasy boss ${boss.name}, legendary powerful enemy, intimidating detailed rpg game art, dramatic lighting`, rand(1, 999999));
+      const enemyDiv = document.getElementById('enemyVisual');
+      enemyDiv.innerHTML = `<img src="${bossImg}" alt="${boss.name}" />`;
       
       startCombat();
       log(`👑 <strong>BOSS ENCOUNTER: ${boss.name}</strong> (Lv.${level})!`, 'boss');
@@ -1280,7 +1298,6 @@
       gameState.inCombat = false;
       document.getElementById('mainButtons').style.display = 'flex';
       document.getElementById('combatButtons').style.display = 'none';
-      document.getElementById('enemyVisual').style.backgroundImage = '';
       document.getElementById('enemyVisual').innerHTML = '';
       updateUI();
     }
@@ -1310,8 +1327,9 @@
       
       grid.innerHTML = items.map((item, i) => {
         const canBuy = gameState.player.gold >= item.cost;
+        const itemImg = getItemImage(item);
         return `<div class="item-card rarity-${item.rarity.toLowerCase()}" onclick="buyItem(${i})" style="${!canBuy ? 'opacity:0.4;' : ''}">
-          <div class="item-icon">${item.icon}</div>
+          <div class="item-image"><img src="${itemImg}" alt="${item.name}"></div>
           <div class="item-name">${item.name}</div>
           <div class="item-stats">💰 ${item.cost} Gold</div>
         </div>`;
@@ -1399,7 +1417,9 @@
       const list = document.getElementById('achievementList');
       list.innerHTML = data.achievements.map(ach => {
         const unlocked = gameState.meta.achievements.includes(ach.id);
+        const achImg = getPollinationImage(`fantasy achievement badge ${ach.icon} ${ach.name} golden trophy rpg game icon`, ach.id.length * 5000);
         return `<div class="achievement-item ${unlocked ? 'unlocked' : ''}">
+          <div class="achievement-icon"><img src="${achImg}" alt="${ach.name}"></div>
           <strong style="color: ${unlocked ? 'var(--legendary)' : '#666'};">${unlocked ? '✅' : '🔒'} ${ach.name}</strong><br>
           <small style="color: #aaa;">${ach.desc}</small>
         </div>`;
@@ -1413,6 +1433,9 @@
       gameState.meta.totalRuns++;
       gameState.meta.totalKills += gameState.monstersKilled;
       saveMeta();
+      
+      const deathImg = getPollinationImage(`dark fantasy death scene, fallen hero in dungeon, dramatic game over screen, cinematic`, Date.now());
+      document.getElementById('deathScene').style.backgroundImage = `url(${deathImg})`;
       
       document.getElementById('finalFloor').textContent = gameState.player.floor;
       document.getElementById('finalLevel').textContent = gameState.player.level;
@@ -1429,7 +1452,6 @@
     }
 
     function updateUI() {
-      // Character
       document.getElementById('charClass').textContent = gameState.player.class || '-';
       document.getElementById('charLevel').textContent = gameState.player.level;
       document.getElementById('charRarity').textContent = gameState.player.rarity;
@@ -1439,7 +1461,6 @@
       document.getElementById('statInt').textContent = gameState.player.intelligence;
       document.getElementById('statDef').textContent = gameState.player.defense;
       
-      // Bars
       const hpPct = Math.max(0, (gameState.player.hp / gameState.player.maxHP) * 100);
       document.getElementById('hpBar').style.width = hpPct + '%';
       document.getElementById('hpText').textContent = `${Math.max(0, gameState.player.hp)}/${gameState.player.maxHP}`;
@@ -1452,12 +1473,10 @@
       document.getElementById('xpBar').style.width = xpPct + '%';
       document.getElementById('xpText').textContent = `${gameState.player.exp}/${gameState.player.expToLevel}`;
       
-      // Effects
       document.getElementById('playerEffects').innerHTML = gameState.player.effects.map(e => 
         `<div class="effect-badge effect-${e.type}">${e.type.toUpperCase()} ${e.duration}</div>`
       ).join('');
       
-      // Skill
       if (gameState.player.class) {
         const skill = data.classes[gameState.player.class].skill;
         document.getElementById('skillPanel').style.display = 'block';
@@ -1470,7 +1489,6 @@
         if (skillBtn) skillBtn.disabled = gameState.player.skillCooldown > 0 || gameState.player.mana < skill.cost;
       }
       
-      // Enemy
       if (gameState.enemy) {
         document.getElementById('enemyName').textContent = gameState.enemy.name;
         document.getElementById('enemyLevel').textContent = gameState.enemy.level;
@@ -1496,7 +1514,6 @@
         document.getElementById('enemyEffects').innerHTML = '';
       }
       
-      // Inventory
       const potions = gameState.inventory.items.filter(i => i.heal || i.mana);
       const potionBtn = document.getElementById('potionBtn');
       if (potionBtn) {
@@ -1518,15 +1535,15 @@
       } else {
         invGrid.innerHTML = gameState.inventory.items.map((item, i) => {
           const stat = item.str ? `+${item.str} STR` : item.def ? `+${item.def} DEF` : item.heal ? `+${item.heal} HP` : `+${item.mana} Mana`;
+          const itemImg = getItemImage(item);
           return `<div class="item-card rarity-${item.rarity.toLowerCase()}" onclick="equipItem(gameState.inventory.items[${i}], ${i})">
-            <div class="item-icon">${item.icon || '📦'}</div>
+            <div class="item-image"><img src="${itemImg}" alt="${item.name}"></div>
             <div class="item-name">${item.name}</div>
             <div class="item-stats">${stat}</div>
           </div>`;
         }).join('');
       }
       
-      // Header stats
       document.getElementById('headerGold').textContent = gameState.player.gold;
       document.getElementById('headerBest').textContent = gameState.meta.bestFloor;
       document.getElementById('headerKills').textContent = gameState.meta.totalKills;
@@ -1535,7 +1552,6 @@
       checkAchievement('rich', gameState.player.gold);
     }
 
-    // Initialize
     updateUI();
   </script>
 </body>
