@@ -386,6 +386,10 @@
       background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 255, 0.1));
       overflow: hidden;
       border: 1px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
     }
     
     .item-image img {
@@ -591,6 +595,10 @@
       background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(255, 0, 255, 0.2));
       border: 2px solid var(--primary);
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
     }
     
     .achievement-icon img {
@@ -893,6 +901,13 @@
     const saved = localStorage.getItem('dungeonforge_meta');
     if (saved) Object.assign(gameState.meta, JSON.parse(saved));
 
+    // Global error handler for failed image loads
+    window.addEventListener('error', (event) => {
+      if (event.target.tagName === 'IMG') {
+        console.warn('Image failed to load:', event.target.src);
+      }
+    }, true);
+
     function saveMeta() {
       localStorage.setItem('dungeonforge_meta', JSON.stringify(gameState.meta));
     }
@@ -909,12 +924,17 @@
     function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
     function getPollinationImage(prompt, seed = Date.now()) {
-      return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=512&height=512&seed=${seed}&nologo=true`;
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=512&height=512&seed=${seed}&nologo=true`;
+      return `<img src="${url}" alt="${prompt}" onerror="this.parentElement.innerHTML='${prompt.includes('boss') ? '👑' : '👹'}';" />`;
     }
 
     function getItemImage(item) {
       const type = item.str ? 'sword weapon' : item.def ? 'armor shield' : item.heal ? 'health potion' : 'mana potion';
-      return getPollinationImage(`fantasy ${type} ${item.rarity} quality rpg game icon`, item.name.length * 1000);
+      const fallbackIcon = item.str ? '⚔️' : item.def ? '🛡️' : item.heal ? '🧪' : '✨';
+      const prompt = `fantasy ${type} ${item.rarity} quality rpg game icon`;
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=60&height=60&seed=${item.name.length * 1000}&nologo=true`;
+      
+      return `<img src="${url}" alt="${item.name}" onerror="this.parentElement.innerHTML='${fallbackIcon}';" />`;
     }
 
     function generateCharacter() {
@@ -949,8 +969,7 @@
       gameState.monstersKilled = 0;
       
       const charImg = getPollinationImage(`epic fantasy ${gameState.player.class} hero character portrait, ${gameState.player.rarity} rarity, detailed rpg game art, heroic pose`, rand(1, 999999));
-      const charDiv = document.getElementById('charVisual');
-      charDiv.innerHTML = `<img src="${charImg}" alt="${gameState.player.class}" />`;
+      document.getElementById('charVisual').innerHTML = charImg;
       
       updateUI();
       log(`⭐ Created <strong class="rarity-${gameState.player.rarity.toLowerCase()}">${gameState.player.rarity} ${gameState.player.class}</strong>!`, 'success');
@@ -1041,8 +1060,7 @@
       };
       
       const enemyImg = getPollinationImage(`dark fantasy ${monster.name} monster enemy, ${isElite ? 'elite powerful' : 'common'} creature, menacing rpg game art, detailed`, rand(1, 999999));
-      const enemyDiv = document.getElementById('enemyVisual');
-      enemyDiv.innerHTML = `<img src="${enemyImg}" alt="${monster.name}" />`;
+      document.getElementById('enemyVisual').innerHTML = enemyImg;
       
       startCombat();
       log(`⚔️ <strong>${gameState.enemy.name}</strong> (Lv.${level}) appears!`, 'combat');
@@ -1063,8 +1081,7 @@
       };
       
       const bossImg = getPollinationImage(`epic fantasy boss ${boss.name}, legendary powerful enemy, intimidating detailed rpg game art, dramatic lighting`, rand(1, 999999));
-      const enemyDiv = document.getElementById('enemyVisual');
-      enemyDiv.innerHTML = `<img src="${bossImg}" alt="${boss.name}" />`;
+      document.getElementById('enemyVisual').innerHTML = bossImg;
       
       startCombat();
       log(`👑 <strong>BOSS ENCOUNTER: ${boss.name}</strong> (Lv.${level})!`, 'boss');
@@ -1302,7 +1319,7 @@
         const slot = item.str ? 'weapon' : 'armor';
         if (gameState.inventory[slot]) gameState.inventory.items.push(gameState.inventory[slot]);
         
-        gameState.inventory[slot] = item;
+        gameState.inventory[slot] = {...item}; // Deep copy
         gameState.inventory.items.splice(index, 1);
         log(`⚙️ Equipped <strong>${item.name}</strong>!`, 'success');
       }
@@ -1346,7 +1363,7 @@
         const canBuy = gameState.player.gold >= item.cost;
         const itemImg = getItemImage(item);
         return `<div class="item-card rarity-${item.rarity.toLowerCase()}" onclick="buyItem(${i})" style="${!canBuy ? 'opacity:0.4;' : ''}">
-          <div class="item-image"><img src="${itemImg}" alt="${item.name}"></div>
+          <div class="item-image">${itemImg}</div>
           <div class="item-name">${item.name}</div>
           <div class="item-stats">💰 ${item.cost} Gold</div>
         </div>`;
@@ -1436,7 +1453,7 @@
         const unlocked = gameState.meta.achievements.includes(ach.id);
         const achImg = getPollinationImage(`fantasy achievement badge ${ach.icon} ${ach.name} golden trophy rpg game icon`, ach.id.length * 5000);
         return `<div class="achievement-item ${unlocked ? 'unlocked' : ''}">
-          <div class="achievement-icon"><img src="${achImg}" alt="${ach.name}"></div>
+          <div class="achievement-icon">${unlocked ? achImg : ach.icon}</div>
           <strong style="color: ${unlocked ? 'var(--legendary)' : '#666'};">${unlocked ? '✅' : '🔒'} ${ach.name}</strong><br>
           <small style="color: #aaa;">${ach.desc}</small>
         </div>`;
@@ -1452,7 +1469,7 @@
       saveMeta();
       
       const deathImg = getPollinationImage(`dark fantasy death scene, fallen hero in dungeon, dramatic game over screen, cinematic`, Date.now());
-      document.getElementById('deathScene').style.backgroundImage = `url(${deathImg})`;
+      document.getElementById('deathScene').innerHTML = deathImg;
       
       document.getElementById('finalFloor').textContent = gameState.player.floor;
       document.getElementById('finalLevel').textContent = gameState.player.level;
@@ -1554,7 +1571,7 @@
           const stat = item.str ? `+${item.str} STR` : item.def ? `+${item.def} DEF` : item.heal ? `+${item.heal} HP` : `+${item.mana} Mana`;
           const itemImg = getItemImage(item);
           return `<div class="item-card rarity-${item.rarity.toLowerCase()}" onclick="handleItemClick(${i})">
-            <div class="item-image"><img src="${itemImg}" alt="${item.name}"></div>
+            <div class="item-image">${itemImg}</div>
             <div class="item-name">${item.name}</div>
             <div class="item-stats">${stat}</div>
           </div>`;
