@@ -1,241 +1,875 @@
-cursor: pointer;
-margin-top: 10px;
-font-weight: bold;
-      transition: all 0.3s;
-}
-
-.generate-img-btn:hover {
-@@ -119,6 +120,7 @@
-.generate-img-btn:disabled {
-opacity: 0.4;
-cursor: not-allowed;
-      transform: none;
-}
-
-.hp-bar {
-@@ -286,13 +288,6 @@
-margin-bottom: 20px;
-}
-
-    .loading {
-      color: #00d4ff;
-      font-size: 0.85em;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚒️ DungeonForge - Roguelike Game</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0e27;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+      border: 2px solid #00d4ff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+    }
+    header {
       text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #00d4ff;
+      padding-bottom: 20px;
+    }
+    header h1 { font-size: 2.5em; color: #00d4ff; }
+    header p { color: #aaa; font-size: 0.9em; }
+    
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .panel {
+      background: rgba(0, 20, 40, 0.7);
+      border: 1px solid #00d4ff;
+      border-radius: 5px;
+      padding: 20px;
+    }
+    
+    .panel h3 {
+      color: #00d4ff;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #00d4ff;
+      padding-bottom: 10px;
+      font-size: 1.1em;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    
+    .stat-item {
+      background: rgba(0, 212, 255, 0.1);
+      padding: 10px;
+      border-radius: 3px;
+      border-left: 3px solid #00d4ff;
+    }
+    
+    .stat-item strong { color: #00d4ff; }
+    .stat-item span { color: #aaa; font-size: 0.9em; }
+    
+    .hp-bar {
+      background: rgba(255, 0, 0, 0.2);
+      border: 1px solid #ff4444;
+      height: 20px;
+      border-radius: 3px;
+      overflow: hidden;
       margin-top: 5px;
     }
     
-@media (max-width: 900px) {
-.game-grid { grid-template-columns: 1fr 1fr; }
-}
-@@ -492,14 +487,14 @@ <h2>💀 YOU DIED 💀</h2>
-},
-rarities: ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'],
-monsters: [
-        { name: 'Goblin', hpMod: 0.8, atkMod: 0.8, defMod: 0.7, desc: 'small green creature with sharp teeth' },
-        { name: 'Orc', hpMod: 1.2, atkMod: 1.1, defMod: 1.0, desc: 'muscular green warrior with tusks' },
-        { name: 'Skeleton', hpMod: 0.9, atkMod: 0.9, defMod: 0.6, desc: 'undead bones wielding a rusty sword' },
-        { name: 'Dark Knight', hpMod: 1.5, atkMod: 1.3, defMod: 1.4, desc: 'armored warrior in black plate armor' },
-        { name: 'Demon', hpMod: 1.8, atkMod: 1.6, defMod: 1.2, desc: 'red-skinned demon with horns and wings' },
-        { name: 'Dragon', hpMod: 2.5, atkMod: 2.0, defMod: 1.8, desc: 'massive scaled dragon with glowing eyes' },
-        { name: 'Wraith', hpMod: 1.0, atkMod: 1.4, defMod: 0.8, desc: 'ghostly spirit with flowing dark robes' },
-        { name: 'Troll', hpMod: 2.0, atkMod: 1.2, defMod: 1.5, desc: 'large brutish troll with regenerating skin' }
-        { name: 'Goblin', hpMod: 0.8, atkMod: 0.8, defMod: 0.7, desc: 'small green goblin creature with sharp teeth and crude weapons' },
-        { name: 'Orc', hpMod: 1.2, atkMod: 1.1, defMod: 1.0, desc: 'muscular green orc warrior with tusks and battle axe' },
-        { name: 'Skeleton', hpMod: 0.9, atkMod: 0.9, defMod: 0.6, desc: 'undead skeleton warrior wielding rusty sword' },
-        { name: 'Dark Knight', hpMod: 1.5, atkMod: 1.3, defMod: 1.4, desc: 'evil knight in black plate armor with glowing red eyes' },
-        { name: 'Demon', hpMod: 1.8, atkMod: 1.6, defMod: 1.2, desc: 'red demon with horns wings and flaming sword' },
-        { name: 'Dragon', hpMod: 2.5, atkMod: 2.0, defMod: 1.8, desc: 'massive dragon with scales wings breathing fire' },
-        { name: 'Wraith', hpMod: 1.0, atkMod: 1.4, defMod: 0.8, desc: 'ghostly wraith spirit with flowing dark ethereal robes' },
-        { name: 'Troll', hpMod: 2.0, atkMod: 1.2, defMod: 1.5, desc: 'large brutish troll with green regenerating skin holding club' }
-],
-weapons: [
-{ name: 'Rusty Sword', str: 2, rarity: 'Common' },
-@@ -543,34 +538,14 @@ <h2>💀 YOU DIED 💀</h2>
-return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+    .hp-fill {
+      background: linear-gradient(90deg, #ff4444, #ff8844);
+      height: 100%;
+      transition: width 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8em;
+      color: #fff;
+    }
+    
+    .xp-bar {
+      background: rgba(0, 212, 255, 0.2);
+      border: 1px solid #00d4ff;
+      height: 15px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    
+    .xp-fill {
+      background: linear-gradient(90deg, #00d4ff, #00ffaa);
+      height: 100%;
+      transition: width 0.3s;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      flex: 1;
+      min-width: 120px;
+      padding: 12px;
+      background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: all 0.3s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(0, 212, 255, 0.5);
+    }
+    
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .combat-btn {
+      background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+      color: #fff;
+    }
+    
+    .combat-btn:hover {
+      box-shadow: 0 5px 20px rgba(255, 68, 68, 0.5);
+    }
+    
+    .defend-btn {
+      background: linear-gradient(135deg, #44ff44 0%, #00cc00 100%);
+      color: #000;
+    }
+    
+    .item-btn {
+      background: linear-gradient(135deg, #ffaa00 0%, #cc8800 100%);
+      color: #000;
+    }
+    
+    .output {
+      background: rgba(0, 20, 40, 0.9);
+      border: 1px solid #00d4ff;
+      border-radius: 5px;
+      padding: 20px;
+      max-height: 250px;
+      overflow-y: auto;
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+    
+    .room-title { color: #ffaa00; margin-bottom: 10px; font-weight: bold; }
+    .combat-log { color: #ff4444; margin: 5px 0; }
+    .success { color: #44ff44; margin: 5px 0; }
+    .info { color: #aaa; margin: 5px 0; }
+    .level-up { color: #ffaa00; font-weight: bold; margin: 5px 0; }
+    
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    
+    .inventory-item {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid #00d4ff;
+      padding: 8px;
+      border-radius: 3px;
+      font-size: 0.85em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    
+    .inventory-item:hover {
+      background: rgba(0, 212, 255, 0.3);
+      transform: scale(1.05);
+    }
+    
+    .inventory-item.equipped {
+      border-color: #ffaa00;
+      background: rgba(255, 170, 0, 0.2);
+    }
+    
+    .rarity-common { color: #aaa; }
+    .rarity-uncommon { color: #44ff44; }
+    .rarity-rare { color: #4488ff; }
+    .rarity-epic { color: #cc44ff; }
+    .rarity-legendary { color: #ffaa00; }
+    
+    .game-over {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .game-over-content {
+      background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+      border: 2px solid #ff4444;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(255, 68, 68, 0.5);
+    }
+    
+    .game-over-content h2 {
+      color: #ff4444;
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 900px) {
+      .game-grid { grid-template-columns: 1fr 1fr; }
+    }
+    
+    @media (max-width: 600px) {
+      .game-grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.8em; }
+      .inventory-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚒️ DungeonForge</h1>
+      <p>Roguelike Dungeon Crawler - Procedurally Generated Adventure</p>
+    </header>
 
-    async function generatePerchanceImage(prompt) {
-      try {
-        const response = await fetch('https://image-generation.perchance.org/api/generate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: prompt,
-            negative_prompt: 'blurry, low quality, distorted, text, watermark',
-            width: 512,
-            height: 512,
-            guidance_scale: 7,
-            seed: Math.floor(Math.random() * 1000000)
-          })
-        });
-        
-        if (!response.ok) throw new Error('Image generation failed');
-        
-        const data = await response.json();
-        return data.image || null;
-      } catch (error) {
-        console.error('Perchance API error:', error);
-        return null;
-      }
-    function generateImageUrl(prompt) {
-      // Using Pollinations.ai free image API - no auth required
-      const encodedPrompt = encodeURIComponent(prompt);
-      const seed = Math.floor(Math.random() * 1000000);
-      return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&seed=${seed}&nologo=true`;
-}
+    <div class="game-grid">
+      <div class="panel">
+        <h3>👤 Character</h3>
+        <div class="stats" id="playerStats">
+          <div class="stat-item">
+            <strong>CLASS:</strong><br>
+            <span id="charClass">Warrior</span>
+          </div>
+          <div class="stat-item">
+            <strong>LEVEL:</strong><br>
+            <span id="level">1</span>
+          </div>
+          <div class="stat-item">
+            <strong>RARITY:</strong><br>
+            <span id="rarity">Common</span>
+          </div>
+          <div class="stat-item">
+            <strong>FLOOR:</strong><br>
+            <span id="floor">1</span>
+          </div>
+        </div>
+        <div style="margin-top: 15px;">
+          <strong style="color: #ff4444;">HP:</strong>
+          <div class="hp-bar">
+            <div class="hp-fill" id="playerHPBar" style="width: 100%;">
+              <span id="playerHP">100/100</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 10px;">
+          <strong style="color: #00d4ff;">XP:</strong>
+          <div class="xp-bar">
+            <div class="xp-fill" id="playerXPBar" style="width: 0%;"></div>
+          </div>
+          <span id="playerXP" style="font-size: 0.8em; color: #aaa;">0 / 100</span>
+        </div>
+        <div class="stats" style="margin-top: 15px;">
+          <div class="stat-item">
+            <strong>STR:</strong> <span id="strength">10</span>
+          </div>
+          <div class="stat-item">
+            <strong>AGI:</strong> <span id="agility">10</span>
+          </div>
+          <div class="stat-item">
+            <strong>INT:</strong> <span id="intelligence">8</span>
+          </div>
+          <div class="stat-item">
+            <strong>DEF:</strong> <span id="defense">5</span>
+          </div>
+        </div>
+      </div>
 
-    async function generateCharacterImage() {
-    function generateCharacterImage() {
-if (gameState.generatingImage) return;
+      <div class="panel">
+        <h3>🏴 Enemy</h3>
+        <div class="stats" id="enemyStats">
+          <div class="stat-item">
+            <strong>NAME:</strong><br>
+            <span id="enemyName">None</span>
+          </div>
+          <div class="stat-item">
+            <strong>LEVEL:</strong><br>
+            <span id="enemyLevel">-</span>
+          </div>
+          <div class="stat-item">
+            <strong>ATK:</strong><br>
+            <span id="enemyDamage">0</span>
+          </div>
+          <div class="stat-item">
+            <strong>DEF:</strong><br>
+            <span id="enemyDefense">0</span>
+          </div>
+        </div>
+        <div style="margin-top: 15px;">
+          <strong style="color: #ff4444;">HP:</strong>
+          <div class="hp-bar">
+            <div class="hp-fill" id="enemyHPBar" style="width: 0%;">
+              <span id="enemyHP">0/0</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 15px; text-align: center;">
+          <span id="combatStatus" style="color: #44ff44; font-weight: bold;">Ready to Explore</span>
+        </div>
+      </div>
 
-gameState.generatingImage = true;
-@@ -579,40 +554,50 @@ <h2>💀 YOU DIED 💀</h2>
-btn.textContent = '⏳ Generating...';
+      <div class="panel">
+        <h3>🎒 Inventory</h3>
+        <div style="font-size: 0.85em; margin-bottom: 10px;">
+          <strong>Equipped:</strong>
+          <div id="equipped" style="color: #aaa; margin-top: 5px;">
+            Weapon: None<br>
+            Armor: None<br>
+            Accessory: None
+          </div>
+        </div>
+        <div style="font-size: 0.85em; margin-top: 10px;">
+          <strong>Items: <span id="itemCount">0</span></strong>
+        </div>
+        <div class="inventory-grid" id="inventoryGrid">
+          <div style="color: #666; text-align: center; grid-column: 1/-1;">Empty</div>
+        </div>
+      </div>
+    </div>
 
-const classStyles = {
-        'Warrior': 'armored warrior with sword and shield',
-        'Mage': 'wizard with flowing robes holding a magical staff',
-        'Rogue': 'stealthy rogue in leather armor with daggers',
-        'Paladin': 'holy paladin in shining armor with divine aura'
-        'Warrior': 'armored warrior hero with sword and shield',
-        'Mage': 'powerful wizard with flowing robes holding magical staff',
-        'Rogue': 'stealthy rogue assassin in leather armor with daggers',
-        'Paladin': 'holy paladin knight in shining armor with divine light aura'
-};
+    <div class="buttons" id="mainButtons">
+      <button onclick="generateCharacter()">🎲 New Character</button>
+      <button onclick="enterDungeon()">🚪 Enter Dungeon</button>
+      <button onclick="exploreDungeon()" id="exploreBtn">🗺️ Explore</button>
+      <button onclick="nextFloor()" id="nextFloorBtn" style="display:none;">⬇️ Next Floor</button>
+      <button onclick="restAtCamp()">🔥 Rest (+30 HP)</button>
+    </div>
 
-const rarityStyles = {
-        'Common': 'simple realistic style',
-        'Uncommon': 'detailed with green magical glow',
-        'Rare': 'highly detailed with blue magical aura',
-        'Epic': 'epic legendary style with purple energy',
-        'Legendary': 'mythical legendary hero with golden radiant light'
-        'Common': 'simple fantasy art',
-        'Uncommon': 'detailed fantasy art with green magical glow',
-        'Rare': 'epic fantasy art with blue magical aura',
-        'Epic': 'legendary fantasy art with purple divine energy',
-        'Legendary': 'mythical legendary hero with golden radiant divine light'
-};
+    <div class="buttons" id="combatButtons" style="display:none;">
+      <button class="combat-btn" onclick="attackEnemy()">⚔️ Attack</button>
+      <button class="defend-btn" onclick="defendAction()">🛡️ Defend</button>
+      <button class="item-btn" onclick="usePotion()" id="potionBtn">🧪 Potion (0)</button>
+      <button onclick="attemptFlee()">🏃 Flee</button>
+    </div>
 
-      const prompt = `Fantasy RPG character portrait, ${classStyles[gameState.player.class]}, ${rarityStyles[gameState.player.rarity]}, heroic pose, detailed face, dungeon background, fantasy art style, dramatic lighting`;
-      const prompt = `fantasy RPG character portrait ${classStyles[gameState.player.class]} ${rarityStyles[gameState.player.rarity]} heroic epic pose detailed face dark dungeon background dramatic lighting digital art masterpiece`;
+    <div class="panel">
+      <h3>📜 Game Log</h3>
+      <div class="output" id="gameLog">
+        <p>Welcome to DungeonForge! Click "New Character" to start your adventure.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-over" id="gameOver">
+    <div class="game-over-content">
+      <h2>💀 YOU DIED 💀</h2>
+      <p style="color: #aaa; font-size: 1.2em; margin-bottom: 20px;">
+        Reached Floor <span id="finalFloor">1</span> | Level <span id="finalLevel">1</span>
+      </p>
+      <button onclick="restartGame()" style="min-width: 200px; font-size: 1.2em;">🔄 New Run</button>
+    </div>
+  </div>
+
+  <script>
+    const gameState = {
+      player: {
+        class: 'Warrior',
+        rarity: 'Common',
+        strength: 10,
+        agility: 10,
+        intelligence: 8,
+        defense: 5,
+        maxHP: 50,
+        hp: 50,
+        level: 1,
+        exp: 0,
+        expToLevel: 100,
+        floor: 1,
+        defending: false
+      },
+      inventory: {
+        weapon: null,
+        armor: null,
+        accessory: null,
+        items: []
+      },
+      enemy: null,
+      inCombat: false,
+      roomsExplored: 0,
+      monstersKilled: 0
+    };
+
+    const data = {
+      classes: {
+        'Warrior': { str: 15, agi: 10, int: 5, def: 8, hp: 60 },
+        'Mage': { str: 5, agi: 8, int: 18, def: 4, hp: 40 },
+        'Rogue': { str: 10, agi: 18, int: 8, def: 5, hp: 45 },
+        'Paladin': { str: 12, agi: 8, int: 12, def: 10, hp: 55 }
+      },
+      rarities: ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'],
+      monsters: [
+        { name: 'Goblin', hpMod: 0.8, atkMod: 0.8, defMod: 0.7 },
+        { name: 'Orc', hpMod: 1.2, atkMod: 1.1, defMod: 1.0 },
+        { name: 'Skeleton', hpMod: 0.9, atkMod: 0.9, defMod: 0.6 },
+        { name: 'Dark Knight', hpMod: 1.5, atkMod: 1.3, defMod: 1.4 },
+        { name: 'Demon', hpMod: 1.8, atkMod: 1.6, defMod: 1.2 },
+        { name: 'Dragon', hpMod: 2.5, atkMod: 2.0, defMod: 1.8 },
+        { name: 'Wraith', hpMod: 1.0, atkMod: 1.4, defMod: 0.8 },
+        { name: 'Troll', hpMod: 2.0, atkMod: 1.2, defMod: 1.5 }
+      ],
+      weapons: [
+        { name: 'Rusty Sword', str: 2, rarity: 'Common' },
+        { name: 'Iron Blade', str: 5, rarity: 'Common' },
+        { name: 'Steel Sword', str: 8, rarity: 'Uncommon' },
+        { name: 'Enchanted Blade', str: 12, rarity: 'Rare' },
+        { name: 'Dragon Slayer', str: 20, rarity: 'Epic' },
+        { name: 'Legendary Excalibur', str: 35, rarity: 'Legendary' }
+      ],
+      armor: [
+        { name: 'Cloth Armor', def: 2, rarity: 'Common' },
+        { name: 'Leather Armor', def: 5, rarity: 'Common' },
+        { name: 'Chain Mail', def: 8, rarity: 'Uncommon' },
+        { name: 'Plate Armor', def: 12, rarity: 'Rare' },
+        { name: 'Dragon Scale', def: 20, rarity: 'Epic' },
+        { name: 'Legendary Aegis', def: 35, rarity: 'Legendary' }
+      ],
+      accessories: [
+        { name: 'Ring of Strength', str: 3, rarity: 'Uncommon' },
+        { name: 'Amulet of Agility', agi: 3, rarity: 'Uncommon' },
+        { name: 'Crown of Intelligence', int: 3, rarity: 'Rare' },
+        { name: 'Belt of Vitality', hp: 20, rarity: 'Rare' },
+        { name: 'Legendary Talisman', str: 5, agi: 5, int: 5, rarity: 'Legendary' }
+      ]
+    };
+
+    function log(message) {
+      const logEl = document.getElementById('gameLog');
+      logEl.innerHTML = '<p class="' + getMessageClass(message) + '">' + message + '</p>' + logEl.innerHTML;
+    }
+
+    function getMessageClass(msg) {
+      if (msg.includes('slain') || msg.includes('victory') || msg.includes('Found')) return 'success';
+      if (msg.includes('hit') || msg.includes('damage') || msg.includes('attacks')) return 'combat-log';
+      if (msg.includes('Level Up') || msg.includes('LEVEL UP')) return 'level-up';
+      if (msg.includes('Room') || msg.includes('Floor')) return 'room-title';
+      return 'info';
+    }
+
+    function random(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateCharacter() {
+      const rarityMap = { 'Common': 1, 'Uncommon': 1.5, 'Rare': 2, 'Epic': 2.5, 'Legendary': 3 };
+      const classes = Object.keys(data.classes);
       
-      const imageUrl = generateImageUrl(prompt);
-      gameState.player.imageUrl = imageUrl;
+      gameState.player.class = classes[random(0, classes.length - 1)];
+      gameState.player.rarity = data.rarities[random(0, 4)];
+      
+      const baseStats = data.classes[gameState.player.class];
+      const multiplier = rarityMap[gameState.player.rarity];
+      
+      gameState.player.strength = Math.floor(baseStats.str * multiplier);
+      gameState.player.agility = Math.floor(baseStats.agi * multiplier);
+      gameState.player.intelligence = Math.floor(baseStats.int * multiplier);
+      gameState.player.defense = Math.floor(baseStats.def * multiplier);
+      gameState.player.maxHP = Math.floor(baseStats.hp * multiplier);
+      gameState.player.hp = gameState.player.maxHP;
+      gameState.player.level = 1;
+      gameState.player.exp = 0;
+      gameState.player.floor = 1;
+      gameState.roomsExplored = 0;
+      gameState.monstersKilled = 0;
+      
+      gameState.inventory = { weapon: null, armor: null, accessory: null, items: [] };
+      
+      updateUI();
+      log(`⭐ ${gameState.player.rarity} ${gameState.player.class} created! Your journey begins...`);
+    }
 
-      const imageUrl = await generatePerchanceImage(prompt);
-      const portrait = document.getElementById('playerPortrait');
-      const img = new Image();
+    function enterDungeon() {
+      if (gameState.player.hp <= 0) {
+        log('❌ Cannot enter dungeon while dead!');
+        return;
+      }
+      gameState.player.floor = 1;
+      log(`🚪 Entered the dungeon. Floor ${gameState.player.floor}...`);
+      updateUI();
+    }
 
-      if (imageUrl) {
-        gameState.player.imageUrl = imageUrl;
-        const portrait = document.getElementById('playerPortrait');
-        portrait.innerHTML = `<img src="${imageUrl}" alt="${gameState.player.class}">`;
-      img.onload = function() {
-        portrait.innerHTML = '';
-        portrait.appendChild(img);
-portrait.classList.remove('empty');
-log('🎨 Character portrait generated!');
+    function exploreDungeon() {
+      if (gameState.inCombat) {
+        log('⚠️ Finish combat first!');
+        return;
+      }
+      
+      const rooms = [
+        { type: 'Empty Chamber', weight: 25 },
+        { type: 'Treasure Room', weight: 15 },
+        { type: 'Monster Lair', weight: 40 },
+        { type: 'Elite Monster', weight: 10 },
+        { type: 'Healing Shrine', weight: 10 }
+      ];
+      
+      const totalWeight = rooms.reduce((sum, r) => sum + r.weight, 0);
+      let roll = random(1, totalWeight);
+      let room = rooms[0].type;
+      
+      for (let r of rooms) {
+        roll -= r.weight;
+        if (roll <= 0) {
+          room = r.type;
+          break;
+        }
+      }
+      
+      gameState.roomsExplored++;
+      log(`📍 Room ${gameState.roomsExplored}: ${room}`);
+      
+      if (room === 'Monster Lair' || room === 'Elite Monster') {
+        encounterEnemy(room === 'Elite Monster');
+      } else if (room === 'Treasure Room') {
+        findLoot();
+      } else if (room === 'Healing Shrine') {
+        const heal = random(15, 30);
+        gameState.player.hp = Math.min(gameState.player.maxHP, gameState.player.hp + heal);
+        log(`✨ Healing Shrine restored ${heal} HP!`);
       } else {
-        log('❌ Failed to generate image. Try again.');
+        log(`🚶 The chamber is empty...`);
       }
-        gameState.generatingImage = false;
-        btn.disabled = false;
-        btn.textContent = '🎨 Generate Portrait';
-      };
+      
+      if (gameState.roomsExplored % 10 === 0 && !gameState.inCombat) {
+        document.getElementById('nextFloorBtn').style.display = 'inline-block';
+        log(`⬇️ Stairs to Floor ${gameState.player.floor + 1} discovered!`);
+      }
+      
+      updateUI();
+    }
 
-      gameState.generatingImage = false;
-      btn.disabled = false;
-      btn.textContent = '🎨 Generate Portrait';
-      img.onerror = function() {
-        log('❌ Failed to load image. Try again.');
-        gameState.generatingImage = false;
-        btn.disabled = false;
-        btn.textContent = '🎨 Generate Portrait';
+    function encounterEnemy(isElite = false) {
+      const monsterData = data.monsters[random(0, data.monsters.length - 1)];
+      const level = gameState.player.floor + random(-1, 2);
+      const levelMod = 1 + (level * 0.2);
+      const eliteMod = isElite ? 1.8 : 1;
+      
+      const hp = Math.floor(30 * levelMod * monsterData.hpMod * eliteMod);
+      const atk = Math.floor((8 + level * 2) * monsterData.atkMod * eliteMod);
+      const def = Math.floor((3 + level) * monsterData.defMod * eliteMod);
+      
+      gameState.enemy = {
+        name: (isElite ? '⭐ Elite ' : '') + monsterData.name,
+        level: level,
+        maxHP: hp,
+        hp: hp,
+        attack: atk,
+        defense: def,
+        isElite: isElite
       };
       
-      img.src = imageUrl;
-      img.alt = gameState.player.class;
-}
-
-    async function generateEnemyImage() {
-    function generateEnemyImage() {
-if (gameState.generatingImage || !gameState.enemy) return;
-
-gameState.generatingImage = true;
-@@ -621,26 +606,36 @@ <h2>💀 YOU DIED 💀</h2>
-btn.textContent = '⏳ Generating...';
-
-const monsterData = data.monsters.find(m => gameState.enemy.name.includes(m.name));
-      const monsterDesc = monsterData ? monsterData.desc : 'fantasy monster';
-      const elitePrefix = gameState.enemy.isElite ? 'elite powerful legendary' : '';
-      const monsterDesc = monsterData ? monsterData.desc : 'fantasy monster creature';
-      const elitePrefix = gameState.enemy.isElite ? 'elite powerful legendary boss' : '';
+      gameState.inCombat = true;
+      document.getElementById('mainButtons').style.display = 'none';
+      document.getElementById('combatButtons').style.display = 'flex';
       
-      const prompt = `fantasy RPG monster ${elitePrefix} ${monsterDesc} menacing threatening pose detailed creature design dark dungeon environment dramatic lighting game art digital painting masterpiece`;
+      log(`🏴 ${gameState.enemy.name} (Lv.${level}) appears!`);
+      updateUI();
+    }
 
-      const prompt = `Fantasy RPG monster, ${elitePrefix} ${monsterDesc}, menacing pose, detailed creature design, dark dungeon environment, dramatic lighting, fantasy game art style, threatening atmosphere`;
-      const imageUrl = generateImageUrl(prompt);
-      gameState.enemy.imageUrl = imageUrl;
+    function attackEnemy() {
+      if (!gameState.enemy) return;
+      
+      gameState.player.defending = false;
+      
+      // Player attack
+      const baseDmg = gameState.player.strength + (gameState.inventory.weapon ? gameState.inventory.weapon.str : 0);
+      const dmg = Math.max(1, baseDmg - gameState.enemy.defense + random(-3, 3));
+      gameState.enemy.hp -= dmg;
+      
+      log(`⚔️ You hit ${gameState.enemy.name} for ${dmg} damage!`);
+      
+      if (gameState.enemy.hp <= 0) {
+        victoryReward();
+        return;
+      }
+      
+      // Enemy counterattack
+      enemyTurn();
+      updateUI();
+    }
 
-      const imageUrl = await generatePerchanceImage(prompt);
-      const portrait = document.getElementById('enemyPortrait');
-      const img = new Image();
+    function defendAction() {
+      gameState.player.defending = true;
+      log(`🛡️ You brace for impact!`);
+      enemyTurn();
+      gameState.player.defending = false;
+      updateUI();
+    }
 
-      if (imageUrl) {
-        gameState.enemy.imageUrl = imageUrl;
-        const portrait = document.getElementById('enemyPortrait');
-        portrait.innerHTML = `<img src="${imageUrl}" alt="${gameState.enemy.name}">`;
-      img.onload = function() {
-        portrait.innerHTML = '';
-        portrait.appendChild(img);
-portrait.classList.remove('empty');
-log('🎨 Enemy portrait generated!');
+    function enemyTurn() {
+      if (!gameState.enemy) return;
+      
+      const enemyDmg = gameState.enemy.attack;
+      const playerDef = gameState.player.defense + (gameState.inventory.armor ? gameState.inventory.armor.def : 0);
+      const defMod = gameState.player.defending ? 2 : 1;
+      const dmg = Math.max(1, enemyDmg - (playerDef * defMod) + random(-2, 2));
+      
+      gameState.player.hp -= dmg;
+      log(`💥 ${gameState.enemy.name} attacks for ${dmg} damage!`);
+      
+      if (gameState.player.hp <= 0) {
+        gameOver();
+      }
+    }
+
+    function usePotion() {
+      const potions = gameState.inventory.items.filter(i => i.type === 'potion');
+      if (potions.length === 0) {
+        log('❌ No potions available!');
+        return;
+      }
+      
+      const potion = potions[0];
+      gameState.player.hp = Math.min(gameState.player.maxHP, gameState.player.hp + potion.heal);
+      gameState.inventory.items = gameState.inventory.items.filter(i => i !== potion);
+      
+      log(`🧪 Used ${potion.name}, restored ${potion.heal} HP!`);
+      
+      if (gameState.inCombat) {
+        enemyTurn();
+      }
+      updateUI();
+    }
+
+    function attemptFlee() {
+      const chance = 50 + gameState.player.agility;
+      if (random(1, 100) <= chance) {
+        log(`🏃 Fled from ${gameState.enemy.name}!`);
+        endCombat();
       } else {
-        log('❌ Failed to generate enemy image.');
+        log(`❌ Failed to flee!`);
+        enemyTurn();
+        updateUI();
       }
-        gameState.generatingImage = false;
-        btn.disabled = false;
-        btn.textContent = '🎨 Generate Enemy';
-      };
+    }
+
+    function victoryReward() {
+      const expGain = Math.floor(50 * (1 + gameState.enemy.level * 0.3) * (gameState.enemy.isElite ? 2 : 1));
+      gameState.player.exp += expGain;
+      gameState.monstersKilled++;
       
-      img.onerror = function() {
-        log('❌ Failed to load enemy image. Try again.');
-        gameState.generatingImage = false;
-        btn.disabled = false;
-        btn.textContent = '🎨 Generate Enemy';
-      };
+      log(`✅ ${gameState.enemy.name} slain! +${expGain} XP`);
+      
+      if (random(1, 100) <= 60) {
+        findLoot();
+      }
+      
+      checkLevelUp();
+      endCombat();
+    }
 
-      gameState.generatingImage = false;
-      btn.disabled = false;
-      btn.textContent = '🎨 Generate Enemy';
-      img.src = imageUrl;
-      img.alt = gameState.enemy.name;
-}
+    function checkLevelUp() {
+      while (gameState.player.exp >= gameState.player.expToLevel) {
+        gameState.player.level++;
+        gameState.player.exp -= gameState.player.expToLevel;
+        gameState.player.expToLevel = Math.floor(gameState.player.expToLevel * 1.4);
+        
+        gameState.player.strength += random(1, 3);
+        gameState.player.agility += random(1, 3);
+        gameState.player.intelligence += random(1, 3);
+        gameState.player.defense += random(1, 2);
+        gameState.player.maxHP += random(5, 12);
+        gameState.player.hp = gameState.player.maxHP;
+        
+        log(`🎉 LEVEL UP! Now Level ${gameState.player.level}! All stats increased!`);
+      }
+    }
 
-function generateCharacter() {
-@@ -668,7 +663,6 @@ <h2>💀 YOU DIED 💀</h2>
+    function findLoot() {
+      const roll = random(1, 100);
+      
+      if (roll <= 35) {
+        const potion = { name: 'Health Potion', type: 'potion', heal: random(20, 40), rarity: 'Common' };
+        gameState.inventory.items.push(potion);
+        log(`💎 Found ${potion.name} (+${potion.heal} HP)`);
+      } else if (roll <= 60) {
+        const rarityRoll = random(1, 100);
+        let itemRarity;
+        if (rarityRoll <= 50) itemRarity = 'Common';
+        else if (rarityRoll <= 75) itemRarity = 'Uncommon';
+        else if (rarityRoll <= 90) itemRarity = 'Rare';
+        else if (rarityRoll <= 97) itemRarity = 'Epic';
+        else itemRarity = 'Legendary';
+        
+        const itemType = random(1, 3);
+        let item;
+        
+        if (itemType === 1) {
+          const weapons = data.weapons.filter(w => w.rarity === itemRarity);
+          item = { ...weapons[random(0, weapons.length - 1)], type: 'weapon' };
+        } else if (itemType === 2) {
+          const armors = data.armor.filter(a => a.rarity === itemRarity);
+          item = { ...armors[random(0, armors.length - 1)], type: 'armor' };
+        } else {
+          const accs = data.accessories.filter(a => a.rarity === itemRarity);
+          item = { ...accs[random(0, accs.length - 1)], type: 'accessory' };
+        }
+        
+        gameState.inventory.items.push(item);
+        log(`💎 Found <span class="rarity-${itemRarity.toLowerCase()}">${item.name}</span>!`);
+      }
+      
+      updateUI();
+    }
 
-gameState.inventory = { weapon: null, armor: null, accessory: null, items: [] };
+    function equipItem(item, index) {
+      if (item.type === 'potion') {
+        usePotion();
+        return;
+      }
+      
+      if (gameState.inventory[item.type]) {
+        gameState.inventory.items.push(gameState.inventory[item.type]);
+      }
+      
+      gameState.inventory[item.type] = item;
+      gameState.inventory.items.splice(index, 1);
+      
+      log(`⚙️ Equipped ${item.name}`);
+      updateUI();
+    }
 
-      // Reset portrait
-const portrait = document.getElementById('playerPortrait');
-portrait.innerHTML = '';
-portrait.classList.add('empty');
-@@ -757,7 +751,6 @@ <h2>💀 YOU DIED 💀</h2>
-imageUrl: null
-};
+    function endCombat() {
+      gameState.enemy = null;
+      gameState.inCombat = false;
+      document.getElementById('mainButtons').style.display = 'flex';
+      document.getElementById('combatButtons').style.display = 'none';
+      updateUI();
+    }
 
-      // Reset enemy portrait
-const portrait = document.getElementById('enemyPortrait');
-portrait.innerHTML = '';
-portrait.classList.add('empty');
-@@ -939,7 +932,6 @@ <h2>💀 YOU DIED 💀</h2>
-document.getElementById('combatButtons').style.display = 'none';
-document.getElementById('genEnemyImg').disabled = true;
+    function nextFloor() {
+      gameState.player.floor++;
+      gameState.roomsExplored = 0;
+      document.getElementById('nextFloorBtn').style.display = 'none';
+      log(`⬇️ Descended to Floor ${gameState.player.floor}!`);
+      updateUI();
+    }
 
-      // Reset enemy portrait
-const portrait = document.getElementById('enemyPortrait');
-portrait.innerHTML = '';
-portrait.classList.add('empty');
+    function restAtCamp() {
+      if (gameState.inCombat) {
+        log('❌ Cannot rest during combat!');
+        return;
+      }
+      gameState.player.hp = Math.min(gameState.player.maxHP, gameState.player.hp + 30);
+      log(`🔥 Rested at camp. Restored 30 HP.`);
+      updateUI();
+    }
+
+    function gameOver() {
+      document.getElementById('finalFloor').textContent = gameState.player.floor;
+      document.getElementById('finalLevel').textContent = gameState.player.level;
+      document.getElementById('gameOver').style.display = 'flex';
+      log(`💀 YOU DIED on Floor ${gameState.player.floor}!`);
+    }
+
+    function restartGame() {
+      document.getElementById('gameOver').style.display = 'none';
+      generateCharacter();
+      log(`🔄 New adventure begins!`);
+    }
+
+    function updateUI() {
+      // Player stats
+      document.getElementById('charClass').textContent = gameState.player.class;
+      document.getElementById('level').textContent = gameState.player.level;
+      document.getElementById('rarity').textContent = gameState.player.rarity;
+      document.getElementById('floor').textContent = gameState.player.floor;
+      document.getElementById('strength').textContent = gameState.player.strength;
+      document.getElementById('agility').textContent = gameState.player.agility;
+      document.getElementById('intelligence').textContent = gameState.player.intelligence;
+      document.getElementById('defense').textContent = gameState.player.defense;
+      
+      // HP bar
+      const hpPercent = (gameState.player.hp / gameState.player.maxHP) * 100;
+      document.getElementById('playerHPBar').style.width = hpPercent + '%';
+      document.getElementById('playerHP').textContent = Math.max(0, gameState.player.hp) + '/' + gameState.player.maxHP;
+      
+      // XP bar
+      const xpPercent = (gameState.player.exp / gameState.player.expToLevel) * 100;
+      document.getElementById('playerXPBar').style.width = xpPercent + '%';
+      document.getElementById('playerXP').textContent = gameState.player.exp + ' / ' + gameState.player.expToLevel;
+      
+      // Enemy
+      if (gameState.enemy) {
+        document.getElementById('enemyName').textContent = gameState.enemy.name;
+        document.getElementById('enemyLevel').textContent = gameState.enemy.level;
+        document.getElementById('enemyDamage').textContent = gameState.enemy.attack;
+        document.getElementById('enemyDefense').textContent = gameState.enemy.defense;
+        
+        const enemyHpPercent = (gameState.enemy.hp / gameState.enemy.maxHP) * 100;
+        document.getElementById('enemyHPBar').style.width = enemyHpPercent + '%';
+        document.getElementById('enemyHP').textContent = Math.max(0, gameState.enemy.hp) + '/' + gameState.enemy.maxHP;
+        document.getElementById('combatStatus').textContent = '⚔️ IN COMBAT';
+        document.getElementById('combatStatus').style.color = '#ff4444';
+      } else {
+        document.getElementById('enemyName').textContent = 'None';
+        document.getElementById('enemyLevel').textContent = '-';
+        document.getElementById('enemyDamage').textContent = '0';
+        document.getElementById('enemyDefense').textContent = '0';
+        document.getElementById('enemyHPBar').style.width = '0%';
+        document.getElementById('enemyHP').textContent = '0/0';
+        document.getElementById('combatStatus').textContent = 'Ready to Explore';
+        document.getElementById('combatStatus').style.color = '#44ff44';
+      }
+      
+      // Inventory
+      const potions = gameState.inventory.items.filter(i => i.type === 'potion');
+      document.getElementById('potionBtn').textContent = `🧪 Potion (${potions.length})`;
+      document.getElementById('potionBtn').disabled = potions.length === 0;
+      
+      let equippedText = '';
+      equippedText += 'Weapon: ' + (gameState.inventory.weapon ? gameState.inventory.weapon.name : 'None') + '<br>';
+      equippedText += 'Armor: ' + (gameState.inventory.armor ? gameState.inventory.armor.name : 'None') + '<br>';
+      equippedText += 'Accessory: ' + (gameState.inventory.accessory ? gameState.inventory.accessory.name : 'None');
+      document.getElementById('equipped').innerHTML = equippedText;
+      
+      document.getElementById('itemCount').textContent = gameState.inventory.items.length;
+      
+      const invGrid = document.getElementById('inventoryGrid');
+      if (gameState.inventory.items.length === 0) {
+        invGrid.innerHTML = '<div style="color: #666; text-align: center; grid-column: 1/-1;">Empty</div>';
+      } else {
+        invGrid.innerHTML = gameState.inventory.items.map((item, i) => {
+          const rarityClass = 'rarity-' + item.rarity.toLowerCase();
+          return `<div class="inventory-item" onclick="equipItem(gameState.inventory.items[${i}], ${i})">
+            <span class="${rarityClass}">${item.name}</span>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    // Initialize
+    updateUI();
+  </script>
+</body>
+</html>
