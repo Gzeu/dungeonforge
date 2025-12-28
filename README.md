@@ -1,8 +1,8 @@
 # ⚒️ DungeonForge - Roguelike Dungeon Crawler
 
-> A procedurally generated roguelike dungeon crawler built with **HTML5, CSS, and vanilla JavaScript**. Explore endless dungeons, encounter procedurally generated monsters, collect loot, and survive the depths!
+A procedurally generated roguelike dungeon crawler built with **HTML5, CSS, and vanilla JavaScript**. Explore endless dungeons, encounter procedurally generated monsters, collect loot, and survive the depths!
 
-🎮 **[Play Now](https://gzeu.github.io/dungeonforge/)** | 📖 **[GitHub Repository](https://github.com/Gzeu/dungeonforge)** | 🔗 **[Pollinations.ai Generator](https://Pollinations.ai.org/lbgw3gxd0m)**
+🎮 **[Play Now](https://gzeu.github.io/dungeonforge/)** | 📖 **[GitHub Repository](https://github.com/Gzeu/dungeonforge)** | 🔗 **[Pollinations.ai Generator](https://pollinations.ai.org/lbgw3gxd0m)**
 
 ---
 
@@ -32,13 +32,16 @@
 ## 🚀 Quick Start
 
 ### Play the Game
-1. Visit: **[https://gzeu.github.io/dungeonforge/](https://gzeu.github.io/dungeonforge/)**
-2. Click **"🎲 New Character"** to create your hero
-3. Click **"🚪 Enter Dungeon"** to start your adventure
-4. Click **"🗺️ Explore"** to encounter rooms and enemies
-5. **Challenge yourself** to go deeper!
+
+Visit: [https://gzeu.github.io/dungeonforge/](https://gzeu.github.io/dungeonforge/)
+
+- Click **"🎲 New Character"** to create your hero
+- Click **"🚪 Enter Dungeon"** to start your adventure
+- Click **"🗺️ Explore"** to encounter rooms and enemies
+- Challenge yourself to go deeper!
 
 ### Run Locally
+
 ```bash
 # Clone the repository
 git clone https://github.com/Gzeu/dungeonforge.git
@@ -47,20 +50,95 @@ cd dungeonforge
 # Open in your browser
 open index.html
 # or
-fireox index.html
+firefox index.html
 ```
+
+> **Note**: This is a single-file implementation for simplicity and ease of deployment!
+
+---
+
+## 🎮 CYBER DUNGEON: Enhanced Game Mode (game1.html)
+
+### 🌐 What's New
+
+**CYBER DUNGEON** is an advanced roguelike variant featuring a complete meta-progression system, tactical combat skills, and persistent upgrades. This cyberpunk-themed variant transforms DungeonForge into a strategic dungeon crawler with long-term progression mechanics.
+
+#### 🔮 Meta-Progression System
+
+Your progress persists across multiple runs through the **Black Market** upgrade system:
+
+- **Credits Banking**: Accumulate "CR" (Credits) from defeated enemies that carry over between runs
+- **Cyberware Implants**: Permanent stat upgrades purchased with Credits
+  - Subdermal Armor: +2 Defense
+  - Neural Link: +3 Agility  
+  - Power Core: +3 Strength
+  - Advanced variants unlock at higher credit thresholds
+- **Tech Parts**: Specialized materials salvaged during runs used for weapon upgrades
+- **Automatic Save**: All progress saves to `localStorage` for cross-session persistence
+
+#### ⚡ Class System & Tactical Skills
+
+Choose your operative class at the start. Each has unique stat distributions and signature skills:
+
+| Class | HP | Mana | Str | Agi | Def | Signature Skill |
+|-------|----|----|-----|-----|-----|------|
+| **Netrunner** 🖥️ | 80 | 100 | 8 | 20 | 5 | Neural Spike (200% electrical damage) |
+| **Street Samurai** ⚔️ | 150 | 30 | 18 | 12 | 12 | Blade Waltz (3 quick strikes) |
+| **Techie** 🔧 | 110 | 60 | 12 | 10 | 18 | System Reboot (heal + cleanse) |
+
+**Neural Deck** (Tactical Skills):
+- **Neural Spike**: 15 MP - 200% weapon damage with electrical surge + guaranteed crit
+- **Blade Waltz**: 10 MP - Execute 3 quick strikes with 50% crit chance each
+- **System Reboot**: 25 MP - Restore 30% Max HP and clear all status effects
+- **Overdrive Mode** (Ultimate): 40 MP - 5-second combat boost with increased agility + visual UI shift
+
+#### 🔓 Interactive Exploration Events
+
+Exploration is no longer linear. Each sector now includes multiple event types:
+
+- **Data Terminals** 💾: Hack a terminal for bonus credits
+  - Correct decryption code → +50-100 CR
+  - Failed hack → Combat trigger (security trace)
+- **Black Market (Mid-Run)** 🖤: Temporary shop to spend current run credits on consumables
+  - Stim-Injector: +50 HP
+  - Firewall Chip: +20% Defense for 3 turns
+  - Overdrive Shard: Instant skill cooldown reset
+- **Security Traces** 🚨: 50% chance after failed hacks to spawn elite "Corpo Enforcer" enemy
+- **Sector Transitions** 🎨: Background and UI colors shift every 5 floors
+  - Neon Slums (Floors 1-5): Cyan theme
+  - Corporate Labs (Floors 6-10): Magenta theme
+  - The Deep Web (Floors 11+): Glitch aesthetic
+
+#### 🎖️ Status Effects & Synergies
+
+Combat now features interconnected status mechanics:
+
+- **System Shock** ⚡: Enemy is stunned for 1 turn; all electrical skills deal +50% damage
+- **Neural Overload** 🔴: Defense reduced by 30%; takes additional damage from skill attacks
+- **Firewall Active** 🛡️: Incoming damage reduced by 40% for 2 turns
+- **Overdrive** 🚀: Agility +100%, attack speed doubled; skills cost 50% less MP
+
+#### 🏆 Achievements & Lore Database
+
+- **Lore Terminal**: Unlocks encyclopedia entries for each defeated boss
+- **Achievement Chips**: Visual badges for milestones
+  - "Netrunner Elite": Complete 10 runs as Netrunner
+  - "Iron Will": Reach floor 20 without using consumables
+  - "Glitch Master": Accumulate 1,000+ Credits in a single run
 
 ---
 
 ## 📋 Game Elements
 
 ### Character Classes
+
 - **Warrior** ⚔️ - High Strength, balanced stats
 - **Mage** 🔮 - High Intelligence, mana-based
 - **Rogue** 🗡️ - High Agility, fast and evasive
 - **Paladin** ⚡ - Balanced tank, all-rounder
 
 ### Rarity Tiers
+
 | Rarity | Stat Multiplier | Probability |
 |--------|-----------------|-------------|
 | Common | 1.0x | 60% |
@@ -70,6 +148,7 @@ fireox index.html
 | Legendary | 3.0x | <1% |
 
 ### Room Types
+
 - **Empty Chamber** 🏜️ - Safe passage
 - **Treasure Room** 💎 - Find valuable loot
 - **Monster Lair** 👹 - Combat encounter
@@ -77,10 +156,12 @@ fireox index.html
 - **Trap Corridor** ⚠️ - Hazards and damage
 
 ### Enemies
-Goblins, Orcs, Skeletons, Dark Knights, Demons, Dragons, Wraiths, Trolls
+
+Goblins, Orcs, Skeletons, Dark Knights, Demons, Dragons, Wraiths, Trolls, Drone Scrappers, Corpo Enforcers, Glitch Wraiths
 
 ### Loot
-Iron Swords, Shields, Potions, Gold Coins, Enchanted Rings, and more!
+
+Iron Swords, Shields, Potions, Gold Coins, Enchanted Rings, Tech Parts, and more!
 
 ---
 
@@ -88,7 +169,7 @@ Iron Swords, Shields, Potions, Gold Coins, Enchanted Rings, and more!
 
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
 - **Architecture**: Single-page application (SPA)
-- **Storage**: LocalStorage for save data
+- **Storage**: LocalStorage for save data and meta-progression
 - **Hosting**: GitHub Pages
 - **Generator Integration**: Pollinations.ai procedural generation
 
@@ -99,11 +180,13 @@ Iron Swords, Shields, Potions, Gold Coins, Enchanted Rings, and more!
 ```
 dungeonforge/
 ├── index.html          # Main game file (all-in-one)
+├── game.html           # Alternative game mode
+├── game1.html          # CYBER DUNGEON (enhanced variant)
 ├── README.md           # This file
-└── .gitignore         # Git ignore rules
+└── .gitignore
 ```
 
-**Note**: This is a single-file implementation for simplicity and ease of deployment!
+> **Note**: This is a single-file implementation for simplicity and ease of deployment!
 
 ---
 
@@ -112,9 +195,15 @@ dungeonforge/
 ```
 1. Generate Character → 2. Enter Dungeon → 3. Explore Rooms
 ↓
-4. Encounter Events (Combat/Treasure/Traps) → 5. Gain Loot
+4. Encounter Events (Combat/Treasure/Terminal/Shop)
 ↓
-6. Progress Deeper (Difficulty Scales) → 7. Repeat until Death
+5. Manage Resources (HP/MP/Credits) → Defeat Enemies
+↓
+6. Collect Loot & Credits → Proceed to Next Floor
+↓
+7. Return to Main Menu → Spend Credits on Cyberware Upgrades
+↓
+8. New Run with Enhanced Stats ↻
 ```
 
 ---
@@ -130,7 +219,9 @@ dungeonforge/
 - [ ] **Animations**: Combat and UI animations
 - [ ] **Leaderboard**: High score tracking
 - [ ] **Multiplayer**: Co-op or PvP modes
-- [ ] **Pollinations.ai Integration**: AI-generated descriptions
+- [ ] **Pollinations.ai Integration**: AI-generated descriptions and sector art
+- [ ] **Branching Paths**: Player choice in dungeon navigation
+- [ ] **NPC Encounters**: Merchants, lore-givers, questgivers
 
 ---
 
@@ -138,7 +229,7 @@ dungeonforge/
 
 Your progress is automatically saved to browser **LocalStorage**. Refresh the page to continue your adventure!
 
-**Note**: Clearing browser data will reset your save.
+> **Note**: Clearing browser data will reset your save.
 
 ---
 
@@ -146,11 +237,20 @@ Your progress is automatically saved to browser **LocalStorage**. Refresh the pa
 
 Want to add features or fix bugs?
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+1. **Fork the repository**
+2. **Create a feature branch**:
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit changes**:
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+4. **Push to branch**:
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open a Pull Request**
 
 ---
 
@@ -173,12 +273,19 @@ This project is open source and available under the **MIT License**.
 - Full combat mechanics
 - Inventory system
 - Equipment system
+- **CYBER DUNGEON variant (game1.html)**
+  - Meta-progression system
+  - Tactical skill deck
+  - Interactive exploration events
+  - Status effect synergies
 
 ### Phase 3 📋 Planned
 - Boss encounters
 - Skill trees
 - Prestige/New Game+
 - Mobile optimization
+- Branching narrative paths
+- Faction reputation system
 
 ---
 
@@ -186,8 +293,9 @@ This project is open source and available under the **MIT License**.
 
 **George Gaze** - Full-stack developer passionate about Web3, gaming, and open-source projects.
 
-- GitHub: [@Gzeu](https://github.com/Gzeu)
-- Projects: [Cyclebound](https://github.com/Gzeu/cyclebound), [VorbaBuna](https://github.com/Gzeu/vorbabuna), [Guildmaster.io](https://github.com/Gzeu/guildmaster)
+**GitHub**: [@Gzeu](https://github.com/Gzeu)
+
+**Projects**: [Cyclebound](https://github.com/Gzeu/cyclebound), [VorbaBuna](https://github.com/Gzeu/vorbabuna), [Guildmaster.io](https://github.com/Gzeu/guildmaster)
 
 ---
 
@@ -195,22 +303,23 @@ This project is open source and available under the **MIT License**.
 
 Found a bug? Have a suggestion?
 
-- 🐛 Open an [Issue](https://github.com/Gzeu/dungeonforge/issues)
-- 💬 Start a [Discussion](https://github.com/Gzeu/dungeonforge/discussions)
-- ⭐ Star the repository if you enjoy the game!
+🐛 **Open an** [Issue](https://github.com/Gzeu/dungeonforge/issues)
+💬 **Start a** [Discussion](https://github.com/Gzeu/dungeonforge/discussions)
+⭐ **Star the repository if you enjoy the game!**
 
 ---
 
 ## 🎮 Have Fun and Happy Dungeon Crawling! ⚒️
 
 ```
-    .___                             ___________
+.___                             ___________
    /   |__  ___  _______  ___  ____  \_   _____/
-  /    |  \ \  \/ /  _ \ \  \/ /  \  |    __) 
- /     |  |_\   (  <_> ) \   /    \  |     \  
- \__   |____/\\_/ \____/   \_/ \__  /  \___  / 
-    |__|                           \/       \/ 
-
-    Welcome to DungeonForge!
-    Can you reach the deepest level?
+  /   ..." | "/ ...________   .../ .../ .../ .../ .-""""""""""".-"
+L.___.__.__/    " ....l..../ .../ .../ .../ .../ ../ """ " / "
+  _____  .____                                  ___________
+ _/ ____\|    |   ____  ____   ____   ____   / _____\__    ___/
+ \   __  |    |  /  _ \ / \  \ / ___\ /  _ \ \   __  \|    |  
+  |  |_| |    |_(  <_> )  Y Y / /_____  <_> ) |  |_|  )    |  
+  |   __|    |____/\___/|__|_|/        \___/  |     ___/|____|  
+  |__|    |_____________________             |__| \
 ```
